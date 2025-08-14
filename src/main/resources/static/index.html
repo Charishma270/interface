@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Navigation Interface with Carousels and Cards</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+    body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+.animated-bg {
+    position: fixed;  /* stays in place while scrolling */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(-45deg, #0f2027, #203a43, #2c5364, #0f0c29, #302b63, #24243e);
+    background-size: 400% 400%;
+    animation: gradientFlow 20s ease infinite;
+    z-index: -1;
+}
+
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
+
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    <div class="min-h-screen">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container ">
+                <div class="nav-content">
+                    <!-- Logo -->
+                    <div class="nav-logo">
+                        <img src="generated-image.png" alt="Your Company Logo" class="logo-image">
+                    </div>
+
+                    <!-- Desktop Navigation -->
+                    <div class="nav-desktop">
+                        <div class="nav-links">
+                            <a href="#" class="nav-link">Home</a>
+                            <a href="#" class="nav-link">Services</a>
+                            <a href="#" class="nav-link">Diet</a>
+                            <a href="#" class="nav-link">Products</a>
+                        </div>
+                    </div>
+
+                    <!-- Auth Buttons - Desktop -->
+                    <div class="nav-auth">
+                        <button class="btn-signin" onclick="location.href='login.html';">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Sign In</span>
+                        </button>
+                        <button class="btn-signup" onclick="location.href='signup.html';">
+                            <i class="fas fa-user"></i>
+                            <span>Sign Up</span>
+                        </button>
+                    </div>
+
+                    <!-- Mobile menu button -->
+                    <div class="nav-mobile-toggle">
+                        <button id="mobileMenuBtn" class="mobile-menu-btn">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu">
+                <div class="mobile-menu-content">
+                    <a href="#" class="mobile-nav-link">Home</a>
+                    <a href="#" class="mobile-nav-link">Services</a>
+                    <a href="#" class="mobile-nav-link">About</a>
+                    <a href="#" class="mobile-nav-link">Products</a>
+                    <a href="#" class="mobile-nav-link">Blog</a>
+                    <a href="#" class="mobile-nav-link">Contact</a>
+                    
+                    <!-- Mobile Auth Buttons -->
+                    <div class="mobile-auth">
+                        <button class="mobile-btn-signin">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Sign In</span>
+                        </button>
+                        <button class="mobile-btn-signup">
+                            <i class="fas fa-user"></i>
+                            <span>Sign Up</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-container">
+                <h1 class="hero-title">
+                    Welcome to Natural Health
+                </h1>
+                <p class="hero-subtitle">
+                    Discover amazing features with this site and ensure your health
+                </p>
+            </div>
+        </section>
+
+        <!-- Carousels Section -->
+        <section class="carousel-section">
+            <div class="carousel-container">
+                <h2 class="section-title">
+                    Features
+                </h2>
+                
+                <!-- First Carousel -->
+                <div class="carousel-wrapper">
+                    <div class="carousel-container-inner">
+                        <div class="carousel-track" id="carouselTrack">
+                            <div class="carousel-slide">
+                                <div class="slide-content">
+                                    <div class="slide-image-placeholder">
+                                        <span>MED KIT</span>
+                                    </div>
+                                    <p>Image 1</p>
+                                    <button class="upload-food-btn">
+                                        <i class="fas fa-upload"></i>
+                                        Upload Food Image
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-content">
+                                    <div class="slide-image-placeholder">
+                                        <span>Consultancy</span>
+                                    </div>
+                                    <p>Image 2</p>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <div class="slide-content">
+                                    <div class="slide-image-placeholder">
+                                        <span>AI Help</span>
+                                    </div>
+                                    <p>Image 3</p>
+                                </div>
+                            </div>
+                    
+                            
+
+                        </div>
+
+                        <!-- Navigation Arrows -->
+                        <button class="carousel-arrow carousel-prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        
+                        <button class="carousel-arrow carousel-next">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+
+                        <!-- Dots Indicator -->
+                        <div class="carousel-dots">
+                            <button class="carousel-dot active"></button>
+                            <button class="carousel-dot"></button>
+                            <button class="carousel-dot"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cards Section -->
+        <section class="cards-section">
+            <div class="cards-container">
+                <h2 class="section-title">
+                    Our Services
+                </h2>
+                
+                <div class="cards-grid">
+                    <div class="card" onclick="handleCardClick('Premium Service')">
+                        <div class="card-image">
+                            <div class="card-image-placeholder">
+                                <div class="placeholder-icon">
+                                    <span>IMG</span>
+                                </div>
+                                <p>Premium Service image</p>
+                            </div>
+                            <div class="card-overlay">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">Premium Service</h3>
+                            <p class="card-description">Experience our top-tier service with dedicated support and advanced features tailored to your needs. Perfect for businesses looking to scale.</p>
+                            <div class="card-action">
+                                <span>Learn More</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" onclick="handleCardClick('Advanced Solutions')">
+                        <div class="card-image">
+                            <div class="card-image-placeholder">
+                                <div class="placeholder-icon">
+                                    <span>IMG</span>
+                                </div>
+                                <p>Advanced Solutions image</p>
+                            </div>
+                            <div class="card-overlay">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">Advanced Solutions</h3>
+                            <p class="card-description">Cutting-edge technology solutions that drive innovation and efficiency. Transform your workflow with our comprehensive suite of tools.</p>
+                            <div class="card-action">
+                                <span>Learn More</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card" onclick="handleCardClick('Expert Support')">
+                        <div class="card-image">
+                            <div class="card-image-placeholder">
+                                <div class="placeholder-icon">
+                                    <span>IMG</span>
+                                </div>
+                                <p>Expert Support image</p>
+                            </div>
+                            <div class="card-overlay">
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">Expert Support</h3>
+                            <p class="card-description">24/7 expert assistance from our dedicated team of professionals. Get the help you need, when you need it, with personalized guidance.</p>
+                            <div class="card-action">
+                                <span>Learn More</span>
+                                <i class="fas fa-external-link-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-grid">
+                    <!-- Company Info -->
+                    <div class="footer-company">
+                        <div class="footer-logo">
+                            <img src="generated-image.png" alt="Company Logo" class="footer-logo-img">
+                        </div>
+                        <p>Creating amazing experiences with beautiful interfaces and seamless navigation. Your trusted partner for digital solutions.</p>
+                        <div class="footer-heart">
+                            <span>Made with</span>
+                            <i class="fas fa-heart"></i>
+                            <span>by Your Company</span>
+                        </div>
+                    </div>
+
+                    <!-- Quick Links -->
+                    <div class="footer-links">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">Services</a></li>
+                            <li><a href="#">About</a></li>
+                            <li><a href="#">Products</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Support -->
+                    <div class="footer-support">
+                        <h4>Support</h4>
+                        <ul>
+                            <li>
+                                <button onclick="handleHelpClick()" class="footer-support-btn">
+                                    <i class="fas fa-question-circle"></i>
+                                    <span>Help</span>
+                                </button>
+                            </li>
+                            <li>
+                                <button onclick="handleContactClick()" class="footer-support-btn">
+                                    <i class="fas fa-envelope"></i>
+                                    <span>Contact Us</span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Bottom Section -->
+                <div class="footer-bottom">
+                    <p>© 2025 Your Company. All rights reserved.</p>
+                    <div class="footer-legal">
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Carousel functionality (infinite wrap with seamless transition)
+        const dots = document.querySelectorAll('.carousel-dot');
+        const track = document.querySelector('.carousel-track');
+        const prevButton = document.querySelector('.carousel-prev');
+        const nextButton = document.querySelector('.carousel-next');
+
+        let originalCount = 0;
+        let position = 1; // visual index in track after cloning (starts at first real slide)
+        let isAnimating = false;
+
+        if (track) {
+            originalCount = track.children.length;
+            if (originalCount > 1) {
+                const firstClone = track.children[0].cloneNode(true);
+                const lastClone = track.children[originalCount - 1].cloneNode(true);
+                track.appendChild(firstClone);
+                track.insertBefore(lastClone, track.firstElementChild);
+                // Start on the first real slide
+                track.style.transform = `translateX(-${position * 100}%)`;
+            }
+        }
+
+        function updateDots() {
+            if (dots.length === 0 || originalCount === 0) return;
+            const logicalIndex = (position - 1 + originalCount) % originalCount;
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === logicalIndex);
+            });
+        }
+
+        function jumpWithoutTransition(targetPosition) {
+            const previousTransition = track.style.transition;
+            track.style.transition = 'none';
+            track.style.transform = `translateX(-${targetPosition * 100}%)`;
+            // force reflow
+            void track.offsetWidth;
+            track.style.transition = previousTransition || '';
+        }
+
+        function goToPosition(targetPosition) {
+            if (!track || originalCount === 0 || isAnimating) return;
+            isAnimating = true;
+            position = targetPosition;
+            track.style.transform = `translateX(-${position * 100}%)`;
+        }
+
+        function nextSlide() {
+            if (!track || originalCount === 0 || isAnimating) return;
+            goToPosition(position + 1);
+        }
+
+        function prevSlide() {
+            if (!track || originalCount === 0 || isAnimating) return;
+            goToPosition(position - 1);
+        }
+
+        if (track) {
+            track.addEventListener('transitionend', () => {
+                if (originalCount <= 1) { isAnimating = false; return; }
+                // If moved past the last real slide (onto the firstClone)
+                if (position === originalCount + 1) {
+                    position = 1;
+                    jumpWithoutTransition(position);
+                }
+                // If moved before the first real slide (onto the lastClone)
+                if (position === 0) {
+                    position = originalCount;
+                    jumpWithoutTransition(position);
+                }
+                isAnimating = false;
+                updateDots();
+            });
+        }
+
+        if (prevButton && nextButton) {
+            prevButton.addEventListener('click', prevSlide);
+            nextButton.addEventListener('click', nextSlide);
+        }
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                if (originalCount === 0 || isAnimating) return;
+                // Map dot index to track position (offset by 1 due to leading clone)
+                const targetPosition = index + 1;
+                goToPosition(targetPosition);
+            });
+        });
+
+        // Mobile menu functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        let isMenuOpen = false;
+
+        mobileMenuBtn.addEventListener('click', function() {
+            isMenuOpen = !isMenuOpen;
+            if (isMenuOpen) {
+                mobileMenu.classList.add('open');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                mobileMenu.classList.remove('open');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        });
+
+        // Card click functionality
+        function handleCardClick(title) {
+            console.log(`Navigate to ${title} page`);
+            // User can add their navigation logic here
+            // window.location.href = 'YOUR_CARD_LINK_HERE';
+        }
+
+        // Footer button functionality
+        function handleHelpClick() {
+            console.log('Navigate to Help page');
+            // User can add their navigation logic here
+            // window.location.href = 'YOUR_HELP_PAGE_LINK_HERE';
+        }
+
+        function handleContactClick() {
+            console.log('Navigate to Contact page');
+            // User can add their navigation logic here
+            // window.location.href = 'YOUR_CONTACT_PAGE_LINK_HERE';
+        }
+
+        // Auto-advance disabled
+        // setInterval(nextSlide, 5000);
+
+        // Initialize carousel to ensure correct state on load
+        updateDots();
+    </script>
+</body>
+</html>
