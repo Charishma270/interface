@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Natural Health</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e6f2f0 0%, #d9ece9 50%, #cce6e3 100%);
+            color: #1b6359;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(230, 242, 240, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(27, 99, 89, 0.1), 0 0 40px rgba(27, 99, 89, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(27, 99, 89, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #249d8a 0%, #1e7468 50%, #1b6359 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="25" cy="75" r="1" fill="%23ffffff" opacity="0.05"/><circle cx="75" cy="25" r="1" fill="%23ffffff" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            animation: textGlow 1.5s infinite alternate;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-container {
+            padding: 40px 30px;
+        }
+
+        .dashboard-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-title h2 {
+            font-size: 1.8rem;
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .dashboard-title p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-btn {
+            width: 100%;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #249d8a 0%, #1e7468 100%);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px -5px rgba(36, 157, 138, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .upload-btn:hover {
+            background: linear-gradient(135deg, #1e7468 0%, #1b6359 100%);
+            box-shadow: 0 15px 35px -5px rgba(36, 157, 138, 0.4);
+        }
+
+        .buttons-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .small-btn {
+            padding: 20px 15px;
+            background: linear-gradient(135deg, #d9ece9 0%, #cce6e3 100%);
+            color: #1b6359;
+            border: 2px solid #1b6359;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+
+        .small-btn:hover {
+            background: linear-gradient(135deg, #1b6359 0%, #145047 100%);
+            color: white;
+            border-color: #145047;
+        }
+
+        .help-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .help-btn {
+            padding: 18px 15px;
+            background: linear-gradient(135deg, #d9ece9 0%, #cce6e3 100%);
+            color: #1b6359;
+            border: 2px solid #1b6359;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+
+        .help-btn:hover {
+            background: linear-gradient(135deg, #1b6359 0%, #145047 100%);
+            color: white;
+            border-color: #145047;
+        }
+
+        .analytics-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .analytics-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .analytics-title h3 {
+            font-size: 1.6rem;
+            color: #1f2937;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .analytics-title p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #d9ece9 0%, #cce6e3 100%);
+            border: 2px solid #1b6359;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 10px 25px -5px rgba(27, 99, 89, 0.3);
+        }
+
+        .stat-card h4 {
+            color: #374151;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1b6359;
+            margin-bottom: 5px;
+        }
+
+        .stat-unit {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .bmi-status {
+            margin-top: 10px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .bmi-normal {
+            background: #d9ece9;
+            color: #1b6359;
+        }
+
+        .chart-container {
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+
+        .diet-plan {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+
+        .diet-plan h4 {
+            color: #92400e;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .diet-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(146, 64, 14, 0.2);
+        }
+
+        .diet-item:last-child {
+            border-bottom: none;
+        }
+
+        .diet-item span {
+            color: #92400e;
+            font-weight: 500;
+        }
+
+        .diet-calories {
+            color: #d97706;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard-container {
+                padding: 30px 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-wrapper {
+                height: 250px;
+            }
+        }
+
+        /* Keyframes for animations */
+        @keyframes textGlow {
+            from {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(41, 182, 246, 0.6);
+            }
+            to {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(41, 182, 246, 0.8);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Advanced Background Effect */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+            opacity: 0.1;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Natural Health<br>Dashboard</h1>
+            <p>Your wellness companion</p>
+        </div>
+        
+        <div class="dashboard-container">
+            <div class="dashboard-title">
+                <h2>Welcome to Your Dashboard</h2>
+                <p>Manage your health journey with our tools</p>
+            </div>
+            
+            <div class="upload-section">
+                <button class="upload-btn" onclick="handleUpload()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M7 10L12 5L17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 5V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Upload Image
+                </button>
+            </div>
+            
+            <div class="buttons-row">
+                <button class="small-btn" onclick="findHospitals()">Find Nearby Hospitals</button>
+                <button class="small-btn" onclick="dietPlans()">Diet Plans</button>
+            </div>
+            
+            <div class="help-buttons">
+                <button class="help-btn" onclick="aiHelp()">AI Help</button>
+                <button class="help-btn" onclick="getHelp()">Help</button>
+            </div>
+
+            <div class="analytics-section">
+                <div class="analytics-title">
+                    <h3>Your Health Analytics</h3>
+                    <p>Track your progress and stay motivated</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Body Mass Index</h4>
+                        <div class="stat-value">22.4</div>
+                        <div class="stat-unit">BMI</div>
+                        <div class="bmi-status bmi-normal">Normal Weight</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h4>Weekly Calories Consumed</h4>
+                        <div class="stat-value">14,250</div>
+                        <div class="stat-unit">kcal</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h4>Weekly Calories Burned</h4>
+                        <div class="stat-value">3,150</div>
+                        <div class="stat-unit">kcal</div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-card">
+                        <div class="chart-title">Weekly Calorie Balance</div>
+                        <div class="chart-wrapper">
+                            <canvas id="calorieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-card">
+                        <div class="chart-title">Daily Exercise Progress</div>
+                        <div class="chart-wrapper">
+                            <canvas id="exerciseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diet-plan">
+                    <h4>Today's Recommended Diet Plan</h4>
+                    <div class="diet-item">
+                        <span>Breakfast: Oatmeal with berries</span>
+                        <span class="diet-calories">320 kcal</span>
+                    </div>
+                    <div class="diet-item">
+                        <span>Mid-Morning: Greek yogurt</span>
+                        <span class="diet-calories">150 kcal</span>
+                    </div>
+                    <div class="diet-item">
+                        <span>Lunch: Grilled chicken salad</span>
+                        <span class="diet-calories">450 kcal</span>
+                    </div>
+                    <div class="diet-item">
+                        <span>Snack: Mixed nuts</span>
+                        <span class="diet-calories">200 kcal</span>
+                    </div>
+                    <div class="diet-item">
+                        <span>Dinner: Salmon with quinoa</span>
+                        <span class="diet-calories">520 kcal</span>
+                    </div>
+                    <div class="diet-item">
+                        <span><strong>Total Daily Intake</strong></span>
+                        <span class="diet-calories"><strong>1,640 kcal</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Calorie Balance Chart
+        const calorieCtx = document.getElementById('calorieChart').getContext('2d');
+        const calorieChart = new Chart(calorieCtx, {
+            type: 'line',
+            data: {
+                labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                datasets: [{
+                    label: 'Calories Consumed',
+                    data: [2100, 1950, 2200, 1850, 2050, 2300, 1800],
+                    borderColor: '#22c55e',
+                    backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }, {
+                    label: 'Calories Burned',
+                    data: [450, 380, 520, 400, 480, 600, 320],
+                    borderColor: '#f59e0b',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                }
+            }
+        });
+
+        // Exercise Progress Chart
+        const exerciseCtx = document.getElementById('exerciseChart').getContext('2d');
+        const exerciseChart = new Chart(exerciseCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cardio', 'Strength Training', 'Yoga', 'Walking'],
+                datasets: [{
+                    data: [30, 25, 20, 25],
+                    backgroundColor: [
+                        '#22c55e',
+                        '#3b82f6',
+                        '#8b5cf6',
+                        '#f59e0b'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    }
+                }
+            }
+        });
+
+        function handleUpload() {
+            console.log('Upload image clicked');
+            alert('Upload image functionality - connect to your backend here');
+        }
+
+        function findHospitals() {
+            console.log('Find nearby hospitals clicked');
+            alert('Find nearby hospitals functionality - connect to your backend here');
+        }
+
+        function dietPlans() {
+            console.log('Diet plans clicked');
+            alert('Diet plans functionality - connect to your backend here');
+        }
+
+        function aiHelp() {
+            console.log('AI help clicked');
+            alert('AI help functionality - connect to your backend here');
+        }
+
+        function getHelp() {
+            console.log('Help clicked');
+            alert('Help functionality - connect to your backend here');
+        }
+    </script>
+</body>
+</html>

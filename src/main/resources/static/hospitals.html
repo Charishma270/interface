@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Nearby Hospitals - Healthcare Locator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #059669, #0d9488);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #059669, #0d9488);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #047857, #0f766e);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
+        }
+        
+        .hospital-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hospital-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-input {
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(5, 150, 105, 0.15);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #059669;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            background: linear-gradient(135deg, #059669, #0d9488);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .rating-stars {
+            color: #fbbf24;
+        }
+        
+        .specialty-tag {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .distance-badge {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #1e40af;
+            border: 1px solid #93c5fd;
+        }
+        
+        .loading-spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #059669;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    <!-- Navigation Bar -->
+    <nav class="glass-effect shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                        </svg>
+                    </div>
+                    <span class="text-2xl font-bold gradient-text">HealthLocator</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="nav-link text-gray-700 font-medium">Home</a>
+                    <a href="#" class="nav-link text-gray-700 font-medium">Emergency Services</a>
+                    <a href="#" class="nav-link text-gray-700 font-medium">Health Tips</a>
+                    <a href="#" class="nav-link text-gray-700 font-medium">About Us</a>
+                    <a href="#" class="nav-link text-gray-700 font-medium">Contact</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors" onclick="toggleMobileMenu()">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-gray-200">
+                <div class="flex flex-col space-y-3 pt-4">
+                    <a href="#" class="text-gray-700 font-medium hover:text-emerald-600 transition-colors">Home</a>
+                    <a href="#" class="text-gray-700 font-medium hover:text-emerald-600 transition-colors">Find Hospitals</a>
+                    <a href="#" class="text-gray-700 font-medium hover:text-emerald-600 transition-colors">Emergency Services</a>
+                    <a href="#" class="text-gray-700 font-medium hover:text-emerald-600 transition-colors">Health Tips</a>
+                    <a href="#" class="text-gray-700 font-medium hover:text-emerald-600 transition-colors">About Us</a>
+                    <a href="#" class="text-gray-700 font-medium hover:text-emerald-600 transition-colors">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Header Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">
+                Find <span class="gradient-text">Nearby Hospitals</span>
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Locate the best healthcare facilities in your area. Search by location, specialty, or hospital name to find quality medical care when you need it most.
+            </p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="glass-effect rounded-2xl p-8 shadow-xl mb-12">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <!-- Location Input -->
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            Location
+                        </label>
+                        <input
+                            type="text"
+                            id="location-input"
+                            class="search-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            placeholder="Enter city, zip code, or address"
+                            value="New York, NY"
+                        />
+                    </div>
+                    
+                    <!-- Specialty Filter -->
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                            Specialty (Optional)
+                        </label>
+                        <select
+                            id="specialty-select"
+                            class="search-input w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                        >
+                            <option value="">All Specialties</option>
+                            <option value="emergency">Emergency Care</option>
+                            <option value="cardiology">Cardiology</option>
+                            <option value="orthopedics">Orthopedics</option>
+                            <option value="pediatrics">Pediatrics</option>
+                            <option value="oncology">Oncology</option>
+                            <option value="neurology">Neurology</option>
+                            <option value="maternity">Maternity</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Search Button -->
+                    <div class="flex items-end">
+                        <button
+                            onclick="searchHospitals()"
+                            class="btn-primary text-white font-semibold py-3 px-8 rounded-xl flex items-center space-x-3 shadow-lg hover:shadow-xl whitespace-nowrap"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <span>Search</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="hidden text-center py-12">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-600 text-lg">Searching for nearby hospitals...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="hidden">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-3xl font-bold text-gray-800">
+                    Search Results
+                </h2>
+                <div class="text-gray-600">
+                    <span id="results-count">0</span> hospitals found
+                </div>
+            </div>
+
+            <!-- Hospital Cards Grid -->
+            <div id="hospitals-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Hospital cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- No Results State -->
+        <div id="no-results" class="hidden text-center py-16">
+            <svg class="w-24 h-24 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.29-1.009-5.824-2.562M15 6.306a7.962 7.962 0 00-6 0m6 0V4a2 2 0 00-2-2h-2a2 2 0 00-2 2v2.306z"></path>
+            </svg>
+            <h3 class="text-2xl font-semibold text-gray-600 mb-2">No hospitals found</h3>
+            <p class="text-gray-500">Try adjusting your search criteria or location.</p>
+        </div>
+    </div>
+
+    <script>
+        // Sample hospital data
+        const hospitalData = [
+            {
+                name: "NewYork-Presbyterian Hospital",
+                address: "525 E 68th St, New York, NY 10065",
+                phone: "(212) 746-5454",
+                distance: "0.8 miles",
+                rating: 4.2,
+                specialties: ["Cardiology", "Neurology", "Emergency Care"],
+                image: "https://images.pexels.com/photos/263402/pexels-photo-263402.jpeg?auto=compress&cs=tinysrgb&w=400",
+                emergency: true,
+                website: "https://www.nyp.org"
+            },
+            {
+                name: "Mount Sinai Hospital",
+                address: "1 Gustave L. Levy Pl, New York, NY 10029",
+                phone: "(212) 241-6500",
+                distance: "1.2 miles",
+                rating: 4.1,
+                specialties: ["Oncology", "Orthopedics", "Pediatrics"],
+                image: "https://images.pexels.com/photos/236380/pexels-photo-236380.jpeg?auto=compress&cs=tinysrgb&w=400",
+                emergency: true,
+                website: "https://www.mountsinai.org"
+            },
+            {
+                name: "NYU Langone Health",
+                address: "550 1st Ave, New York, NY 10016",
+                phone: "(212) 263-7300",
+                distance: "1.5 miles",
+                rating: 4.3,
+                specialties: ["Emergency Care", "Maternity", "Cardiology"],
+                image: "https://images.pexels.com/photos/668300/pexels-photo-668300.jpeg?auto=compress&cs=tinysrgb&w=400",
+                emergency: true,
+                website: "https://nyulangone.org"
+            },
+            {
+                name: "Hospital for Special Surgery",
+                address: "535 E 70th St, New York, NY 10021",
+                phone: "(212) 606-1000",
+                distance: "1.8 miles",
+                rating: 4.5,
+                specialties: ["Orthopedics", "Sports Medicine"],
+                image: "https://images.pexels.com/photos/3786157/pexels-photo-3786157.jpeg?auto=compress&cs=tinysrgb&w=400",
+                emergency: false,
+                website: "https://www.hss.edu"
+            },
+            {
+                name: "Memorial Sloan Kettering Cancer Center",
+                address: "1275 York Ave, New York, NY 10065",
+                phone: "(212) 639-2000",
+                distance: "2.1 miles",
+                rating: 4.4,
+                specialties: ["Oncology", "Cancer Treatment"],
+                image: "https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg?auto=compress&cs=tinysrgb&w=400",
+                emergency: false,
+                website: "https://www.mskcc.org"
+            },
+            {
+                name: "Lenox Hill Hospital",
+                address: "100 E 77th St, New York, NY 10075",
+                phone: "(212) 434-2000",
+                distance: "2.3 miles",
+                rating: 4.0,
+                specialties: ["Emergency Care", "Neurology", "Maternity"],
+                image: "https://images.pexels.com/photos/3845810/pexels-photo-3845810.jpeg?auto=compress&cs=tinysrgb&w=400",
+                emergency: true,
+                website: "https://www.lenoxhill.northwell.edu"
+            }
+        ];
+
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        }
+
+        // Search hospitals function
+        function searchHospitals() {
+            const location = document.getElementById('location-input').value;
+            const specialty = document.getElementById('specialty-select').value;
+            
+            if (!location.trim()) {
+                alert('Please enter a location to search for hospitals.');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('loading-state').classList.remove('hidden');
+            document.getElementById('results-section').classList.add('hidden');
+            document.getElementById('no-results').classList.add('hidden');
+
+            // Simulate API call delay
+            setTimeout(() => {
+                let filteredHospitals = hospitalData;
+
+                // Filter by specialty if selected
+                if (specialty) {
+                    filteredHospitals = hospitalData.filter(hospital => 
+                        hospital.specialties.some(spec => 
+                            spec.toLowerCase().includes(specialty.toLowerCase())
+                        )
+                    );
+                }
+
+                displayResults(filteredHospitals);
+            }, 1500);
+        }
+
+        // Display search results
+        function displayResults(hospitals) {
+            document.getElementById('loading-state').classList.add('hidden');
+            
+            if (hospitals.length === 0) {
+                document.getElementById('no-results').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('results-section').classList.remove('hidden');
+            document.getElementById('results-count').textContent = hospitals.length;
+
+            const grid = document.getElementById('hospitals-grid');
+            grid.innerHTML = '';
+
+            hospitals.forEach((hospital, index) => {
+                const hospitalCard = createHospitalCard(hospital, index);
+                grid.appendChild(hospitalCard);
+            });
+        }
+
+        // Create hospital card element
+        function createHospitalCard(hospital, index) {
+            const card = document.createElement('div');
+            card.className = 'hospital-card glass-effect rounded-2xl p-6 shadow-lg fade-in';
+            card.style.animationDelay = `${index * 0.1}s`;
+
+            const starsHtml = generateStars(hospital.rating);
+            const specialtiesHtml = hospital.specialties.slice(0, 3).map(specialty => 
+                `<span class="specialty-tag px-3 py-1 rounded-full text-xs font-medium">${specialty}</span>`
+            ).join('');
+
+            card.innerHTML = `
+                <div class="relative mb-4">
+                    <img src="${hospital.image}" alt="${hospital.name}" class="w-full h-48 object-cover rounded-xl">
+                    ${hospital.emergency ? '<div class="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">24/7 Emergency</div>' : ''}
+                    <div class="distance-badge absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold">
+                        ${hospital.distance}
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">${hospital.name}</h3>
+                    <div class="flex items-center mb-2">
+                        <div class="rating-stars mr-2">${starsHtml}</div>
+                        <span class="text-gray-600 text-sm">${hospital.rating}/5.0</span>
+                    </div>
+                </div>
+                
+                <div class="space-y-3 mb-4">
+                    <div class="flex items-start space-x-3">
+                        <svg class="w-4 h-4 text-gray-500 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span class="text-gray-600 text-sm">${hospital.address}</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <svg class="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                        </svg>
+                        <a href="tel:${hospital.phone}" class="text-emerald-600 hover:text-emerald-700 text-sm font-medium">${hospital.phone}</a>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="text-gray-600 text-sm mb-2">Specialties:</p>
+                    <div class="flex flex-wrap gap-2">
+                        ${specialtiesHtml}
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button onclick="getDirections('${hospital.address}')" class="flex-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 font-medium py-2 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        </svg>
+                        <span>Directions</span>
+                    </button>
+                    <button onclick="window.open('${hospital.website}', '_blank')" class="flex-1 btn-primary text-white font-medium py-2 px-4 rounded-lg flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                        <span>Visit Website</span>
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // Generate star rating HTML
+        function generateStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+            
+            let starsHtml = '';
+            
+            // Full stars
+            for (let i = 0; i < fullStars; i++) {
+                starsHtml += '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+            }
+            
+            // Half star
+            if (hasHalfStar) {
+                starsHtml += '<svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><defs><linearGradient id="half"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="transparent"/></linearGradient></defs><path fill="url(#half)" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+            }
+            
+            // Empty stars
+            for (let i = 0; i < emptyStars; i++) {
+                starsHtml += '<svg class="w-4 h-4 text-gray-300 fill-current" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+            }
+            
+            return starsHtml;
+        }
+
+        // Get directions function
+        function getDirections(address) {
+            const encodedAddress = encodeURIComponent(address);
+            const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`;
+            window.open(mapsUrl, '_blank');
+        }
+
+        // Initialize page with default search
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-search on page load
+            setTimeout(() => {
+                searchHospitals();
+            }, 500);
+        });
+
+        // Allow Enter key to trigger search
+        document.getElementById('location-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchHospitals();
+            }
+        });
+    </script>
+</body>
+</html>

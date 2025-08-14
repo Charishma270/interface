@@ -210,19 +210,38 @@
     </div>
 
     <script>
-        function handleSignup(event) {
+        async function handleSignup(event) {
             event.preventDefault();
             const contact = document.getElementById('contact').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            
+
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
                 return;
             }
-            
-            console.log('Signup attempt:', { contact, password });
-            alert('Sign up functionality - connect to your backend here');
+
+            try {
+                const response = await fetch('/api/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({ email: contact, password: password, confirmPassword: confirmPassword }),
+                });
+
+                if (response.ok) {
+                    const message = await response.text();
+                    alert(message);
+                    // Redirect to login page or another page if needed
+                } else {
+                    const error = await response.text();
+                    alert(`Error: ${error}`);
+                }
+            } catch (error) {
+                console.error('Error during signup:', error);
+                alert('An unexpected error occurred. Please try again later.');
+            }
         }
     </script>
 </body>
