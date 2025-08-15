@@ -20,6 +20,127 @@
             padding: 20px;
         }
 
+        /* Top Navbar */
+        .topnav {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(27, 99, 89, 0.2);
+            border-radius: 16px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            box-shadow: 0 12px 24px -12px rgba(27, 99, 89, 0.15);
+            backdrop-filter: blur(12px);
+            margin-bottom: 16px;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 160px;
+        }
+
+        .nav-logo {
+            height: 36px;
+            width: 36px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 6px 14px -6px rgba(27, 99, 89, 0.25);
+            cursor: pointer;
+        }
+
+        .nav-title {
+            font-weight: 700;
+            color: #1b6359;
+            font-size: 1rem;
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            border: 1px solid rgba(27, 99, 89, 0.2);
+            border-radius: 999px;
+            padding: 8px 10px;
+            width: min(520px, 100%);
+            box-shadow: 0 10px 20px -14px rgba(27, 99, 89, 0.2);
+        }
+
+        .nav-search input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            color: #145047;
+            font-size: 0.95rem;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #249d8a 0%, #1e7468 100%);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 8px 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 20px -12px rgba(27, 99, 89, 0.35);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 28px -14px rgba(27, 99, 89, 0.45);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+            justify-content: flex-end;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #ffffff;
+            border: 1px solid rgba(27, 99, 89, 0.2);
+            border-radius: 999px;
+            padding: 6px 10px;
+            box-shadow: 0 10px 20px -14px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-avatar {
+            height: 28px;
+            width: 28px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d9ece9, #cce6e3);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #145047;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+
+        .profile-name {
+            color: #145047;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -331,6 +452,36 @@
             .chart-wrapper {
                 height: 250px;
             }
+
+            .nav-center {
+                display: none;
+            }
+        }
+        .profile-name {
+            color: #145047;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .logout-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+            border: 1px solid #b91c1c;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 16px -12px rgba(239, 68, 68, 0.6);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 22px -12px rgba(220, 38, 38, 0.7);
+            background: linear-gradient(135deg, #f05252 0%, #dc2626 100%);
         }
 
         /* Keyframes for animations */
@@ -369,6 +520,36 @@
     </style>
 </head>
 <body>
+    <!-- Top navigation -->
+    <nav class="topnav">
+        <div class="nav-left">
+            <img src="generated-image.png" alt="Logo" class="nav-logo" onclick="window.location.href='index.html'" />
+            <div class="nav-title">Natural Health</div>
+        </div>
+        <div class="nav-center">
+            <div class="nav-search">
+                <input id="navSearchInput" type="text" placeholder="Search health tips, foods, workouts..." />
+                <button class="search-btn" onclick="handleSearch()">Search</button>
+            </div>
+        </div>
+        <div class="nav-right">
+            <div class="profile">
+                <div class="profile-avatar" id="profileInitials">JS</div>
+                <div class="profile-name" id="profileName">John Smith</div>
+            </div>
+            <div class="nav-right">
+                </div>
+                <button class="logout-btn" onclick="handleLogout()" aria-label="Log out">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11 8L15 12L11 16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M21 4V20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                    <span>Logout</span>
+                </button>
+            </div>
+    </nav>
+
     <div class="container">
         <div class="header">
             <h1>Natural Health<br>Dashboard</h1>
@@ -479,6 +660,16 @@
     </div>
 
     <script>
+        function handleSearch() {
+            const q = (document.getElementById('navSearchInput')?.value || '').trim();
+            if (!q) {
+                alert('Please enter something to search.');
+                return;
+            }
+            console.log('Searching for:', q);
+            // window.location.href = `search.html?q=${encodeURIComponent(q)}`;
+        }
+
         // Calorie Balance Chart
         const calorieCtx = document.getElementById('calorieChart').getContext('2d');
         const calorieChart = new Chart(calorieCtx, {
@@ -560,13 +751,11 @@
         }
 
         function findHospitals() {
-            console.log('Find nearby hospitals clicked');
-            alert('Find nearby hospitals functionality - connect to your backend here');
+            window.location.href = 'hospitals.html';
         }
 
         function dietPlans() {
-            console.log('Diet plans clicked');
-            alert('Diet plans functionality - connect to your backend here');
+            window.location.href = 'UserData.html';
         }
 
         function aiHelp() {
@@ -577,6 +766,11 @@
         function getHelp() {
             console.log('Help clicked');
             alert('Help functionality - connect to your backend here');
+        }
+
+        function handleLogout() {
+            try { localStorage.clear(); } catch (e) {}
+            window.location.href = 'login.html';
         }
     </script>
 </body>
