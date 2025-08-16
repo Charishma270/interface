@@ -95,7 +95,6 @@
             box-shadow: 0 0 0 3px hsl(155, 65%, 45%, 0.1);
         }
 
-        /* Pop animation for Register button */
         .login-btn {
             width: 100%;
             padding: 0.75rem;
@@ -106,7 +105,7 @@
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            animation: popInOut 1.8s infinite ease-in-out; /* New animation */
+            animation: popInOut 1.8s infinite ease-in-out;
             transition: all 0.3s ease;
             margin-bottom: 1.5rem;
         }
@@ -180,10 +179,11 @@
                 <p>Create your account to get started</p>
             </div>
             
+            <!-- Updated form -->
             <form onsubmit="handleSignup(event)">
                 <div class="form-group">
-                    <label for="contact">Email or Phone Number</label>
-                    <input type="text" id="contact" name="contact" placeholder="your@email.com or +1234567890" required>
+                    <label for="email">Email or Phone Number</label>
+                    <input type="text" id="email" name="email" placeholder="your@email.com or +1234567890" required>
                 </div>
                 
                 <div class="form-group">
@@ -210,39 +210,49 @@
     </div>
 
     <script>
-        async function handleSignup(event) {
-            event.preventDefault();
-            const contact = document.getElementById('contact').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+    async function handleSignup(event) {
+        event.preventDefault();
 
-            if (password !== confirmPassword) {
-                alert('Passwords do not match!');
-                return;
-            }
+        // Get form values
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
 
-            try {
-                const response = await fetch('http://localhost:8080/api/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({ email: contact, password: password, confirmPassword: confirmPassword }),
-                });
-
-                if (response.ok) {
-                    const message = await response.text();
-                    alert(message);
-                    // Redirect to login page or another page if needed
-                } else {
-                    const error = await response.text();
-                    alert(`Error: ${error}`);
-                }
-            } catch (error) {
-                console.error('Error during signup:', error);
-                alert('An unexpected error occurred. Please try again later.');
-            }
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
         }
-    </script>
+
+        try {
+            // POST request to backend
+            const response = await fetch('http://localhost:8080/signup', { // Must match controller mapping
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    email: email, 
+                    password: password, 
+                    confirmPassword: confirmPassword
+                }),
+            });
+
+            // Handle response
+            const message = await response.text();
+            if (response.ok) {
+                alert(message); // Success message
+                // Optional: redirect to login page
+                // window.location.href = 'login.html';
+            } else {
+                alert(`Error: ${message}`); // Error message from backend
+            }
+        } catch (error) {
+            console.error('Error during signup:', error);
+            alert('An unexpected error occurred. Please try again later.');
+        }
+    }
+</script>
+
 </body>
 </html>
